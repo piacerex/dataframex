@@ -1,4 +1,4 @@
-defmodule Dataframe do
+defmodule Dataframex do
 
 	#===============================================================================
 	#===============================================================================
@@ -64,15 +64,15 @@ defmodule Dataframe do
 		[ "Integer", "Float", "Float", "Boolean" ]
 	"""
 	def types_from_row(  %{ "columns" => _columns, "rows" => rows } = _dataframe ) do
-		rows 
-		|> Dataframe.transpose 
-		|> Enum.map( fn columns -> columns 
-			|> Enum.reduce( [], fn column, acc -> [ Type.is( column ) | acc ] end ) 
-			|> Enum.reverse 
-			|> Enum.group_by( & &1, & &1 ) 
-			|> Enum.map( fn { k, v } -> { k, Enum.count( v ) } end ) 
-			|> Enum.sort( & elem( &1, 1 ) > elem( &2, 1 ) ) 
-			|> List.first 
+		rows
+		|> Dataframe.transpose
+		|> Enum.map( fn columns -> columns
+			|> Enum.reduce( [], fn column, acc -> [ Type.is( column ) | acc ] end )
+			|> Enum.reverse
+			|> Enum.group_by( & &1, & &1 )
+			|> Enum.map( fn { k, v } -> { k, Enum.count( v ) } end )
+			|> Enum.sort( & elem( &1, 1 ) > elem( &2, 1 ) )
+			|> List.first
 			|> elem( 0 )
 		end )
 	end
@@ -121,8 +121,8 @@ defmodule Dataframe do
 	"""
 	def filter_match_row( input_rows, join_rows, key_nos ) do
 		input_rows
-		|> Enum.map( fn input_row -> 
-			join_rows |> Enum.map( fn join_row -> 
+		|> Enum.map( fn input_row ->
+			join_rows |> Enum.map( fn join_row ->
 #IO.puts "-----------------------------------------"
 #IO.inspect key_nos[ "input_key_no1" ]
 #IO.inspect key_nos[ "join_key_no1" ]
@@ -133,7 +133,7 @@ defmodule Dataframe do
 					( Enum.at( input_row, key_nos[ "input_key_no1" ] ) == Enum.at( join_row, key_nos[ "join_key_no1" ] ) )
 					&& ( key_nos[ "input_key_no2" ] == nil || ( Enum.at( input_row, key_nos[ "input_key_no2" ] ) == Enum.at( join_row, key_nos[ "join_key_no2" ] ) ) )
 					&& ( key_nos[ "input_key_no3" ] == nil || ( Enum.at( input_row, key_nos[ "input_key_no3" ] ) == Enum.at( join_row, key_nos[ "join_key_no3" ] ) ) )
-				) 
+				)
 				do
 					%{ "input" => input_row, "join" => join_row }
 				end
@@ -173,8 +173,8 @@ defmodule Dataframe do
 	"""
 	def filter_input_exist_row( input_rows, join_rows, key_nos ) do
 		result = input_rows
-			|> Enum.map( fn input_row -> 
-				pickup = join_rows |> Enum.map( fn join_row -> 
+			|> Enum.map( fn input_row ->
+				pickup = join_rows |> Enum.map( fn join_row ->
 #IO.puts "-------------------------------"
 #IO.inspect key_nos[ "input_key_no1" ]
 #IO.inspect key_nos[ "join_key_no1" ]
@@ -189,7 +189,7 @@ defmodule Dataframe do
 						( Enum.at( input_row, key_nos[ "input_key_no1" ] ) == Enum.at( join_row, key_nos[ "join_key_no1" ] ) || Enum.at( join_row, key_nos[ "join_key_no1" ] ) == nil  )
 						&& ( key_nos[ "input_key_no2" ] == nil || Enum.at( input_row, key_nos[ "input_key_no2" ] ) == Enum.at( join_row, key_nos[ "join_key_no2" ] ) || Enum.at( join_row, key_nos[ "join_key_no2" ] ) == nil )
 						&& ( key_nos[ "input_key_no3" ] == nil || Enum.at( input_row, key_nos[ "input_key_no3" ] ) == Enum.at( join_row, key_nos[ "join_key_no3" ] ) || Enum.at( join_row, key_nos[ "join_key_no3" ] ) == nil  )
-					) 
+					)
 					do
 						%{ "input" => input_row, "join" => join_row }
 					end
@@ -236,13 +236,13 @@ defmodule Dataframe do
 	"""
 	def filter_join_exist_row( input_rows, join_rows, key_nos ) do
 		result = join_rows
-			|> Enum.map( fn join_row -> 
-				pickup = input_rows |> Enum.map( fn input_row -> 
+			|> Enum.map( fn join_row ->
+				pickup = input_rows |> Enum.map( fn input_row ->
 					if(
 						( Enum.at( input_row, key_nos[ "input_key_no1" ] ) == Enum.at( join_row, key_nos[ "join_key_no1" ] ) || Enum.at( input_row, key_nos[ "input_key_no1" ] ) == nil )
 						&& ( key_nos[ "input_key_no2" ] == nil || Enum.at( input_row, key_nos[ "input_key_no2" ] ) == Enum.at( join_row, key_nos[ "join_key_no2" ] ) || Enum.at( input_row, key_nos[ "input_key_no2" ] ) == nil )
 						&& ( key_nos[ "input_key_no3" ] == nil || Enum.at( input_row, key_nos[ "input_key_no3" ] ) == Enum.at( join_row, key_nos[ "join_key_no3" ] ) || Enum.at( input_row, key_nos[ "input_key_no3" ] ) == nil )
-					) 
+					)
 					do
 						%{ "input" => input_row, "join" => join_row }
 					end
@@ -285,9 +285,9 @@ defmodule Dataframe do
 	"""
 	def unshift_rows( rows, column_nos ) do
 		rows
-		|> Enum.map( fn join_only_row -> 
-			( column_nos |> Enum.reduce( [], fn column_no, acc -> 
-				acc ++ [ Enum.at( join_only_row[ "join" ], column_no ) ] 
+		|> Enum.map( fn join_only_row ->
+			( column_nos |> Enum.reduce( [], fn column_no, acc ->
+				acc ++ [ Enum.at( join_only_row[ "join" ], column_no ) ]
 			end ) ) ++ join_only_row[ "input" ]
 		end )
 	end
@@ -436,7 +436,7 @@ defmodule Dataframe do
 	Drop row
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def drop_row( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -457,7 +457,7 @@ defmodule Dataframe do
 			%{ "columns" => columns, "rows" => rows, "error" => message }
 		else
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 
 #TODO: タイプ判定が無い
 
@@ -475,7 +475,7 @@ defmodule Dataframe do
 							if ( Enum.at( row, column_no ) != condition ) == false do
 								row
 							end
-						true -> 
+						true ->
 							IO.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 							IO.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 							IO.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -497,7 +497,7 @@ defmodule Dataframe do
 	Sort row
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def sort_row( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -559,20 +559,20 @@ defmodule Dataframe do
 			uniques = rows
 				|> Enum.map( fn row -> [ Enum.at( row, unique_column_no ), Enum.at( row, pickup_column_no ) ] end )
 				|> Enum.group_by( fn row -> Enum.at( row, 0 ) end, fn row -> Enum.at( row, 1 ) end )
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 #TODO: リストでは無くマップの方がいい？、↓
-					[ 
-						elem( row, 0 ), 
+					[
+						elem( row, 0 ),
 #TODO: mix、maxなどを網羅すること
 						case Enum.at( manipulation[ "options" ], 0 ) do
 							"min"	-> elem( row, 1 ) |> Enum.min
 							_		-> elem( row, 1 ) |> Enum.max
 						end
-					] 
+					]
 				end )
 
 			filtered_rows = rows
-				|> Enum.filter( fn row -> 
+				|> Enum.filter( fn row ->
 					uniques |> Enum.map( fn unique ->
 						Enum.at( row, unique_column_no ) == Enum.at( unique, 0 ) && Enum.at( row, pickup_column_no ) == Enum.at( unique, 1 )
 					end )
@@ -580,7 +580,7 @@ defmodule Dataframe do
 				end )
 
 			processed_rows = filtered_rows
-				|> Enum.uniq_by( fn row -> 
+				|> Enum.uniq_by( fn row ->
 					uniques |> Enum.map( fn unique ->
 						Enum.at( row, unique_column_no ) == Enum.at( unique, 0 )
 					end )
@@ -598,7 +598,7 @@ defmodule Dataframe do
 	Map value
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def map_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -622,7 +622,7 @@ defmodule Dataframe do
 			originals = maps |> Enum.map( & &1 |> List.first )
 
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 					map_no = Enum.find_index( originals, & &1 == Enum.at( row, column_no ) )
 					if map_no != nil do
 						List.replace_at( row, column_no, Enum.at( Enum.at( maps, map_no ), 1 ) )
@@ -639,7 +639,7 @@ defmodule Dataframe do
 	Replace value
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def replace_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -660,7 +660,7 @@ defmodule Dataframe do
 			%{ "columns" => columns, "rows" => rows, "error" => message }
 		else
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 					value = Enum.at( row, column_no )
 					pattern = Regex.compile!( manipulation[ "destination" ] )
 					if Regex.match?( pattern, value ) do
@@ -678,7 +678,7 @@ defmodule Dataframe do
 	Replace other column value
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def replace_other_column_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -700,7 +700,7 @@ defmodule Dataframe do
 			%{ "columns" => columns, "rows" => rows, "error" => message }
 		else
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 					value = Enum.at( row, column_no )
 					pattern = Regex.compile!( manipulation[ "destination" ] )
 					if Regex.match?( pattern, value ) do
@@ -718,7 +718,7 @@ defmodule Dataframe do
 	Retrieve value
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def retrieve_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -739,7 +739,7 @@ defmodule Dataframe do
 			%{ "columns" => columns, "rows" => rows, "error" => message }
 		else
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 					value = Enum.at( row, column_no )
 					pattern = Regex.compile!( manipulation[ "destination" ] )
 					capture_map = Regex.named_captures( pattern, value )
@@ -758,7 +758,7 @@ defmodule Dataframe do
 	Calculate value
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def calculate_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -779,7 +779,7 @@ defmodule Dataframe do
 			%{ "columns" => columns, "rows" => rows, "error" => message }
 		else
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 					value  = Type.to_number( Enum.at( row, column_no ) )
 					effect = Type.to_number( Enum.at( manipulation[ "options" ], 0 ) )
 					calculated = case manipulation[ "destination" ] do
@@ -800,7 +800,7 @@ defmodule Dataframe do
 	Fill missing
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def fill_missing( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -821,7 +821,7 @@ defmodule Dataframe do
 			%{ "columns" => columns, "rows" => rows, "error" => message }
 		else
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 					value = Enum.at( row, column_no )
 					if value == nil || value == "" do
 						List.replace_at( row , column_no, manipulation[ "destination" ] )
@@ -838,7 +838,7 @@ defmodule Dataframe do
 	One Hot Encoding
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def one_hot_encoding( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -870,7 +870,7 @@ defmodule Dataframe do
 	Group by
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def group_by( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -914,7 +914,7 @@ defmodule Dataframe do
 			sources      = manipulations |> Enum.map( & &1[ "source" ] )
 			destinations = manipulations |> Enum.map( & &1[ "destination" ] )
 			processed_columns = columns
-				|> Enum.map( fn column_name -> 
+				|> Enum.map( fn column_name ->
 					index = Enum.find_index( sources, & &1 == column_name )
 					if index != nil, do: Enum.at( destinations, index ), else: column_name
 				end )
@@ -939,7 +939,7 @@ defmodule Dataframe do
 
 			processed_columns = Lst.pickup_unmatch( columns, names )
 
-			processed_rows = 
+			processed_rows =
 				rows
 				|> Enum.map( & List.zip( [ Lst.to_atoms_from_strings( columns ), &1 ] ) )
 				|> Enum.map( & Lst.delete_by_keys( &1, names ) )
@@ -965,7 +965,7 @@ defmodule Dataframe do
 
 			processed_columns = Lst.pickup_unmatch( columns, names )
 
-			processed_rows = 
+			processed_rows =
 				rows
 				|> Flow.from_enumerable()
 				|> Flow.map( & List.zip( [ Lst.to_atoms_from_strings( columns ), &1 ] ) )
@@ -1025,7 +1025,7 @@ defmodule Dataframe do
 			processed_columns = add_columns ++ columns
 
 #TODO: 複数列に対応する
-			values = Stream.iterate( List.first( starts ) + before_rows, &( &1 + List.first( steps ) ) ) 
+			values = Stream.iterate( List.first( starts ) + before_rows, &( &1 + List.first( steps ) ) )
 				|> Stream.map( & &1 |> Type.to_string )
 				|> Enum.take( Enum.count( rows ) )
 
@@ -1041,7 +1041,7 @@ defmodule Dataframe do
 	Duplicate column
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def duplicate_column( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -1076,7 +1076,7 @@ defmodule Dataframe do
 	Extract column
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def extract_column( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -1100,7 +1100,7 @@ defmodule Dataframe do
 			processed_columns = [ manipulation[ "destination" ] ] ++ columns
 
 			processed_rows = rows
-				|> Enum.map( fn row -> 
+				|> Enum.map( fn row ->
 
 #TODO: タイプ判定が無い
 
@@ -1123,7 +1123,7 @@ defmodule Dataframe do
 							else
 								[ "" ] ++ row
 							end
-						true -> 
+						true ->
 							IO.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 							IO.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 							IO.puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -1146,7 +1146,7 @@ defmodule Dataframe do
 	Combine columns
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def combine_columns( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -1182,7 +1182,7 @@ defmodule Dataframe do
 	Pickup column
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def pickup_column( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -1222,7 +1222,7 @@ defmodule Dataframe do
 		#:ok
 	"""
 	def write_to_csv_file( %{ "columns" => columns, "rows" => rows } = dataframe, path ) do
-		body = 
+		body =
 			Lst.to_csv( columns, [ quote: "\"", ] ) <> "\n"
 			<>
 			Enum.reduce( rows, "", fn row, acc -> acc <> Lst.to_csv( row, [ quote: "\"" ] ) <> "\n" end )
@@ -1248,10 +1248,10 @@ defmodule Dataframe do
 		|> CSV.decode
 		|> Enum.take( if head == -1, do: 9999999999999999, else: head )
 		|> Stream.filter( &( elem( &1, 0 ) == :ok ) )	#TODO: apply libraried
-		|> Stream.map( & elem( &1, 1 ) 
+		|> Stream.map( & elem( &1, 1 )
 			|> Enum.map( fn column -> column
-				|> String.replace( "\"", "\"\"" ) 
-				|> String.replace( "\n\r\n", "\n" ) 
+				|> String.replace( "\"", "\"\"" )
+				|> String.replace( "\n\r\n", "\n" )
 			end )
 		)
 		|> Enum.to_list
@@ -1288,26 +1288,26 @@ defmodule Dataframe do
 	"""
 	def add_type_and_statistics( dataframe ) do
 		columns = dataframe[ "columns" ]
-			|> Enum.map( & 
-				%{ 
-					"name"			=> &1, 
+			|> Enum.map( &
+				%{
+					"name"			=> &1,
 					"type"			=> "string", #TODO
-					"division"		=> 
+					"division"		=>
 						%{ "valid"	=> "70%", "mismatch" => "23%", "missing" => "7%" }, #TODO
-					"distributions"	=> 
-						[ 
+					"distributions"	=>
+						[
 							%{ "label" => "0 - 50",    "value" => 49, "ratio" => "5.50%" }, #TODO
-							%{ "label" => "51 - 100",  "value" => 50, "ratio" => "4.71%" }, 
-							%{ "label" => "101 - 150", "value" => 50, "ratio" => "4.71%" }, 
-							%{ "label" => "151 - 200", "value" => 49, "ratio" => "5.50%" }, 
-							%{ "label" => "201 - 250", "value" => 50, "ratio" => "4.71%" }, 
-						], 
+							%{ "label" => "51 - 100",  "value" => 50, "ratio" => "4.71%" },
+							%{ "label" => "101 - 150", "value" => 50, "ratio" => "4.71%" },
+							%{ "label" => "151 - 200", "value" => 49, "ratio" => "5.50%" },
+							%{ "label" => "201 - 250", "value" => 50, "ratio" => "4.71%" },
+						],
 					"summaries"		=> "-", #TODO
 				} )
 
 		%{
-			"columns"	=> columns, 
-			"rows"		=> dataframe[ "rows" ], 
+			"columns"	=> columns,
+			"rows"		=> dataframe[ "rows" ],
 		}
 	end
 
@@ -1315,14 +1315,14 @@ defmodule Dataframe do
 	Read DB
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def read_db( table, head \\ -1 ) do
 		records = DB.execute( "select * from #{ table }" )
 
 		%{
-			"columns"	=> records[ "columns" ], 
+			"columns"	=> records[ "columns" ],
 			"rows"		=> records[ "rows" ] |> Enum.take( if head == -1, do: 9999999999999999, else: head ) |> Enum.map( fn row -> row |> Enum.map( fn column -> Type.to_string_datetime( column ) end ) end )
 		}
 	end
@@ -1331,7 +1331,7 @@ defmodule Dataframe do
 	Write DB
 
 	## Examples
-		iex> 
+		iex>
 		nil
 	"""
 	def write_db( %{ "columns" => columns, "rows" => rows }, table ) do
@@ -1341,11 +1341,11 @@ defmodule Dataframe do
 		|> Enum.map( fn row ->
 			#TODO: エラーハンドリング向けにどう実装するか？
 			#IO.puts "\n"
-			row_escaped = row 
-				|> Enum.map( fn column -> 
+			row_escaped = row
+				|> Enum.map( fn column ->
 					#TODO: エラーハンドリング向けにどう実装するか？
 					#IO.inspect column
-					column |> String.replace( "'", "" ) 
+					column |> String.replace( "'", "" )
 				end )
 			query <> ( Lst.to_csv( row_escaped, [ quote: "'" ] ) |> String.replace( "''", "null" ) ) <> " )" |> DB.execute
 		end )
