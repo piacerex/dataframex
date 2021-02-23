@@ -9,8 +9,8 @@ defmodule Dataframex do
 	Read/write dataframe from csv file
 
 	## Examples
-		iex> Dataframe.write_csv( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
-		iex> Dataframe.read_csv( "test/dataframe.csv" )
+		iex> Dataframex.write_csv( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
+		iex> Dataframex.read_csv( "test/dataframe.csv" )
 		%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ "0","9","1","2" ], [ "0","9","6","7" ], [ "0","9","11","12" ] ] }
 		#iex> File.rm!( "test/dataframe.csv" )
 		#:ok
@@ -22,7 +22,7 @@ defmodule Dataframex do
 	Get columns from dataframe
 
 	## Examples
-		iex> Dataframe.columns( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] } )
+		iex> Dataframex.columns( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] } )
 		[ "c3","c4","c1","c2" ]
 	"""
 	def columns( dataframe ), do: dataframe[ "columns" ]
@@ -36,7 +36,7 @@ defmodule Dataframex do
 	Transpose rows
 
 	## Examples
-		iex> Dataframe.transpose( [ [ "c0", "c1", "c2" ], [ "j1", "j2", "j3" ] ] )
+		iex> Dataframex.transpose( [ [ "c0", "c1", "c2" ], [ "j1", "j2", "j3" ] ] )
 		[ [ "c0", "j1" ], [ "c1", "j2" ], [ "c2", "j3" ] ]
 	"""
 	def transpose( rows ) do
@@ -55,17 +55,17 @@ defmodule Dataframex do
 	Types from rows
 
 	## Examples
-		iex> Dataframe.types_from_row( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ "abc", 123, 12.34, true ] ] } )
+		iex> Dataframex.types_from_row( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ "abc", 123, 12.34, true ] ] } )
 		[ "String", "Integer", "Float", "Boolean" ]
-		iex> Dataframe.types_from_row( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ "abc", "123", "12.34", "true" ] ] } )
+		iex> Dataframex.types_from_row( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ "abc", "123", "12.34", "true" ] ] } )
 		[ "String", "Integer", "Float", "Boolean" ]
 
-		iex> Dataframe.types_from_row( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ "abc", "123", "12.34", "true" ], [ "456", "56.78", "12.34", "1" ], [ "789", "90.12", "xyz", "false" ], [ "012", "12.34", "12.34", "true" ] ] } )
+		iex> Dataframex.types_from_row( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ "abc", "123", "12.34", "true" ], [ "456", "56.78", "12.34", "1" ], [ "789", "90.12", "xyz", "false" ], [ "012", "12.34", "12.34", "true" ] ] } )
 		[ "Integer", "Float", "Float", "Boolean" ]
 	"""
 	def types_from_row(  %{ "columns" => _columns, "rows" => rows } = _dataframe ) do
 		rows
-		|> Dataframe.transpose
+		|> Dataframex.transpose
 		|> Enum.map( fn columns -> columns
 			|> Enum.reduce( [], fn column, acc -> [ Type.is( column ) | acc ] end )
 			|> Enum.reverse
@@ -81,7 +81,7 @@ defmodule Dataframex do
 	Pickup match input-key/join-key
 
 	## Examples
-		iex> Dataframe.pickup_match_key( [ "c0", "c1", "c2", "c3", "c4", "c5" ], [ "j1", "j2", "j3", "j4", "j5", "j6" ], [ "c1", "j1", "c3", "j3", "c5", "j5" ] )
+		iex> Dataframex.pickup_match_key( [ "c0", "c1", "c2", "c3", "c4", "c5" ], [ "j1", "j2", "j3", "j4", "j5", "j6" ], [ "c1", "j1", "c3", "j3", "c5", "j5" ] )
 		%{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 3, "join_key_no2" => 2, "input_key_no3" => 5, "join_key_no3" => 4 }
 	"""
 	def pickup_match_key( columns, join_columns, options ) do
@@ -101,22 +101,22 @@ defmodule Dataframex do
 	Filter match row
 
 	## Examples
-		iex> Dataframe.filter_match_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_match_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2" ], "join" => [ "l0", "r6" ] }, %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "l4", "r2" ] } ]
 
-		iex> Dataframe.filter_match_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_match_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "l4", "r2" ] } ]
 
-		iex> Dataframe.filter_match_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "r1", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_match_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "r1", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[]
 
-		iex> Dataframe.filter_match_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "j5", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_match_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "j5", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j2", "j3" ] }, %{ "input" => [ "r8", "r9", "r10", "r11" ], "join" => [ "r9", "j10", "j11" ] } ]
 
-		iex> Dataframe.filter_match_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2 } )
+		iex> Dataframex.filter_match_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2 } )
 		[ %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j2", "l2" ] }, %{ "input" => [ "l4", "l5", "l6", "r7" ], "join" => [ "l5", "j6", "l6" ] } ]
 
-		iex> Dataframe.filter_match_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "l6" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2, "input_key_no3" => 3, "join_key_no3" => 2 } )
+		iex> Dataframex.filter_match_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "l6" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2, "input_key_no3" => 3, "join_key_no3" => 2 } )
 		[ %{ "input" => [ "l4", "l5", "l6", "l6" ], "join" => [ "l5", "j6", "l6" ] } ]
 	"""
 	def filter_match_row( input_rows, join_rows, key_nos ) do
@@ -147,28 +147,28 @@ defmodule Dataframex do
 	Filter input exists row
 
 	## Examples
-		iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2" ], "join" => [ "l0", "r6" ] }, %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "l4", "r2" ] } ]
 
-		iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2" ], "join" => [ "", "" ] }, %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "l4", "r2" ] } ]
 
-		iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "r1", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "r1", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2" ], "join" => [ "", "" ] }, %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "", "" ] } ]
 
-		iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l0", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l0", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2" ], "join" => [ "l0", "r2" ] }, %{ "input" => [ "l0", "l1", "l2" ], "join" => [ "l0", "r6" ] }, %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "", "" ] } ]
 
-		iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "j5", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "j5", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j2", "j3" ] }, %{ "input" => [ "l4", "l5", "l6", "r7" ], "join" => [ "", "", "" ] }, %{ "input" => [ "r8", "r9", "r10", "r11" ], "join" => [ "r9", "j10", "j11" ] } ]
 
-		iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "l1", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "l1", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j2", "j3" ] }, %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j6", "j7" ] }, %{ "input" => [ "l4", "l5", "l6", "r7" ], "join" => [ "", "", "" ] }, %{ "input" => [ "r8", "r9", "r10", "r11" ], "join" => [ "r9", "j10", "j11" ] } ]
 
-		#iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2 } )
+		#iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2 } )
 		#[ %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j2", "j3" ] }, %{ "input" => [ "l4", "l5", "l6", "r7" ], "join" => [ "l5", "j6", "l6" ] }, %{ "input" => [ "r8", "r9", "r10", "r11" ], "join" => [ "", "", "" ] } ]
 
-		#iex> Dataframe.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "l6" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2, "input_key_no3" => 3, "join_key_no3" => 2 } )
+		#iex> Dataframex.filter_input_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "l6" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2, "input_key_no3" => 3, "join_key_no3" => 2 } )
 		#[ %{ "input" => [ "l4", "l5", "l6", "l6" ], "join" => [ "l5", "j6", "l6" ] } ]
 	"""
 	def filter_input_exist_row( input_rows, join_rows, key_nos ) do
@@ -216,22 +216,22 @@ defmodule Dataframex do
 	Filter join exists row
 
 	## Examples
-		iex> Dataframe.filter_join_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_join_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "l0", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "l4", "r2" ] }, %{ "input" => [ "l0", "l1", "l2" ], "join" => [ "l0", "r6" ] } ]
 
-		iex> Dataframe.filter_join_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_join_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "l4", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "l4", "l5", "l6" ], "join" => [ "l4", "r2" ] }, %{ "input" => [ "", "", "" ], "join" => [ "r5", "r6" ] } ]
 
-		iex> Dataframe.filter_join_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "r1", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
+		iex> Dataframex.filter_join_exist_row( [ [ "l0", "l1", "l2" ], [ "l4", "l5", "l6" ] ], [ [ "r1", "r2" ], [ "r5", "r6" ] ], %{ "input_key_no1" => 0, "join_key_no1" => 0 } )
 		[ %{ "input" => [ "", "", "" ], "join" => [ "r1", "r2" ] }, %{ "input" => [ "", "", "" ], "join" => [ "r5", "r6" ] } ]
 
-		#iex> Dataframe.filter_join_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "j5", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
+		#iex> Dataframex.filter_join_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "j3" ], [ "j5", "j6", "j7" ], [ "r9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0 } )
 		#[ %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j2", "j3" ] }, %{ "input" => [ "r8", "r9", "r10", "r11" ], "join" => [ "r9", "j10", "j11" ] } ]
 
-		#iex> Dataframe.filter_join_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2 } )
+		#iex> Dataframex.filter_join_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "r7" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2 } )
 		#[ %{ "input" => [ "l0", "l1", "l2", "r3" ], "join" => [ "l1", "j2", "l2" ] }, %{ "input" => [ "l4", "l5", "l6", "r7" ], "join" => [ "l5", "j6", "l6" ] } ]
 
-		#iex> Dataframe.filter_join_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "l6" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2, "input_key_no3" => 3, "join_key_no3" => 2 } )
+		#iex> Dataframex.filter_join_exist_row( [ [ "l0", "l1", "l2", "r3" ], [ "l4", "l5", "l6", "l6" ], [ "r8", "r9", "r10", "r11" ] ], [ [ "l1", "j2", "l2" ], [ "l5", "j6", "l6" ], [ "j9", "j10", "j11" ] ], %{ "input_key_no1" => 1, "join_key_no1" => 0, "input_key_no2" => 2, "join_key_no2" => 2, "input_key_no3" => 3, "join_key_no3" => 2 } )
 		#[ %{ "input" => [ "l4", "l5", "l6", "l6" ], "join" => [ "l5", "j6", "l6" ] } ]
 	"""
 	def filter_join_exist_row( input_rows, join_rows, key_nos ) do
@@ -269,7 +269,7 @@ defmodule Dataframex do
 	Unshift columns
 
 	## Examples
-		#iex> Dataframe.unshift_columns( [ "c0", "c1" ], [ "j1", "j2" ] )  #TODO: 未実装なので追って実装すること
+		#iex> Dataframex.unshift_columns( [ "c0", "c1" ], [ "j1", "j2" ] )  #TODO: 未実装なので追って実装すること
 		#[ "j2", "j1", "c0", "c1" ]
 	"""
 	def unshift_columns( columns, destination ) do
@@ -280,7 +280,7 @@ defmodule Dataframex do
 	Unshift rows
 
 	## Examples
-		iex> Dataframe.unshift_rows( [ %{ "input" => [ "l0", "l1" ], "join" => [ "j1", "j2", "j3" ] }, %{ "input" => [ "l4", "l5" ], "join" => [ "j4", "j5", "j6" ] }, %{ "input" => [ "r8", "r9" ], "join" => [ "j7", "j8", "j9" ] } ], [ 2, 0 ] )
+		iex> Dataframex.unshift_rows( [ %{ "input" => [ "l0", "l1" ], "join" => [ "j1", "j2", "j3" ] }, %{ "input" => [ "l4", "l5" ], "join" => [ "j4", "j5", "j6" ] }, %{ "input" => [ "r8", "r9" ], "join" => [ "j7", "j8", "j9" ] } ], [ 2, 0 ] )
 		[ [ "j3", "j1", "l0", "l1" ], [ "j6", "j4", "l4", "l5" ], [ "j9", "j7", "r8", "r9" ] ]
 	"""
 	def unshift_rows( rows, column_nos ) do
@@ -300,9 +300,9 @@ defmodule Dataframex do
 	Join when matched
 
 	## Examples
-		#iex> Dataframe.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/Dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ] ] }
-		#iex> Dataframe.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ] ] }
 	"""
 	def join_when_matched( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -346,10 +346,10 @@ defmodule Dataframex do
 	Join if input exists
 
 	## Examples
-		iex> Dataframe.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "", "", "3", "4" ], [ "7", "5", "5", "6" ] ] }
 
-		iex> Dataframe.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "", "", "3", "4" ], [ "7", "5", "5", "6" ], [ "", "", "7", "8" ], [ "11", "9", "9", "10" ],  ] }
 	"""
 	def join_if_input_exists( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -389,10 +389,10 @@ defmodule Dataframex do
 	Join if join exists
 
 	## Examples
-		iex> Dataframe.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "", "" ], [ "15", "13", "", "" ] ] }
 
-		iex> Dataframe.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ], [ "15", "13", "", "" ] ] }
 	"""
 	def join_if_join_exists( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -529,13 +529,13 @@ defmodule Dataframex do
 	Unique row
 
 	## Examples
-		iex> Dataframe.unique_row( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "1", "4" ], [ "5", "6" ] ] }, %{ "source" => "c1", "destination" => "c2", "options" => [ "max" ] } )
+		iex> Dataframex.unique_row( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "1", "4" ], [ "5", "6" ] ] }, %{ "source" => "c1", "destination" => "c2", "options" => [ "max" ] } )
 		%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "4" ], [ "5", "6" ] ] }
-		iex> Dataframe.unique_row( %{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "2", "3" ], [ "1", "4", "4" ], [ "1", "5", "6" ] ] }, %{ "source" => "c1", "destination" => "c2", "options" => [ "max" ] } )
+		iex> Dataframex.unique_row( %{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "2", "3" ], [ "1", "4", "4" ], [ "1", "5", "6" ] ] }, %{ "source" => "c1", "destination" => "c2", "options" => [ "max" ] } )
 		%{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "5", "6" ] ] }
-		iex> Dataframe.unique_row( %{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "", "3" ], [ "1", "", "4" ], [ "1", "", "6" ] ] }, %{ "source" => "c2", "destination" => "c3", "options" => [ "max" ] } )
+		iex> Dataframex.unique_row( %{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "", "3" ], [ "1", "", "4" ], [ "1", "", "6" ] ] }, %{ "source" => "c2", "destination" => "c3", "options" => [ "max" ] } )
 		%{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "", "6" ] ] }
-		iex> Dataframe.unique_row( %{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "", "3" ], [ "1", "", "4" ], [ "1", "", "6" ] ] }, %{ "source" => "c2", "destination" => "c1", "options" => [ "max" ] } )
+		iex> Dataframex.unique_row( %{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "", "3" ], [ "1", "", "4" ], [ "1", "", "6" ] ] }, %{ "source" => "c2", "destination" => "c1", "options" => [ "max" ] } )
 		%{ "columns" => [ "c1", "c2", "c3" ], "rows" => [ [ "1", "", "3" ] ] }
 	"""
 	def unique_row( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -906,7 +906,7 @@ defmodule Dataframex do
 	Rename columns
 
 	## Examples
-		iex> Dataframe.rename_column( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ 1, 2, 3, 4 ], [ 6, 7, 8, 9 ] ] }, [ %{ "source" => "c2", "destination" => "l2" } ] )
+		iex> Dataframex.rename_column( %{ "columns" => [ "c1", "c2", "c3", "c4" ], "rows" => [ [ 1, 2, 3, 4 ], [ 6, 7, 8, 9 ] ] }, [ %{ "source" => "c2", "destination" => "l2" } ] )
 		%{ "columns" => [ "c1", "l2", "c3", "c4" ], "rows" => [ [ 1, 2, 3, 4 ], [ 6, 7, 8, 9 ] ] }
 	"""
 	def rename_column( %{ "columns" => columns, "rows" => rows }, manipulations ) do
@@ -929,7 +929,7 @@ defmodule Dataframex do
 	Drop columns in rows
 
 	## Examples
-		iex> Dataframe.drop_column( %{ "columns" => [ "c1", "c2", "c3", "c4", "c5" ], "rows" => [ [ 1, 2, 3, 4, 5 ], [ 6, 7, 8, 9, 0 ] ] }, [ %{ "source" => "c2", "dummy" => 21 }, %{ "source" => "c4", "dummy" => 42 } ] )
+		iex> Dataframex.drop_column( %{ "columns" => [ "c1", "c2", "c3", "c4", "c5" ], "rows" => [ [ 1, 2, 3, 4, 5 ], [ 6, 7, 8, 9, 0 ] ] }, [ %{ "source" => "c2", "dummy" => 21 }, %{ "source" => "c4", "dummy" => 42 } ] )
 		%{ "columns" => [ "c1", "c3", "c5" ], "rows" => [ [ 1, 3, 5 ], [ 6, 8, 0 ] ] }
 	"""
 	def drop_column( %{ "columns" => columns, "rows" => rows }, manipulations ) do
@@ -955,7 +955,7 @@ defmodule Dataframex do
 	Drop columns in rows
 
 	## Examples
-		iex> Dataframe.drop_column_flow( %{ "columns" => [ "c1", "c2", "c3", "c4", "c5" ], "rows" => [ [ 1, 2, 3, 4, 5 ], [ 6, 7, 8, 9, 0 ] ] }, [ %{ "source" => "c2", "dummy" => 21 }, %{ "source" => "c4", "dummy" => 42 } ] )
+		iex> Dataframex.drop_column_flow( %{ "columns" => [ "c1", "c2", "c3", "c4", "c5" ], "rows" => [ [ 1, 2, 3, 4, 5 ], [ 6, 7, 8, 9, 0 ] ] }, [ %{ "source" => "c2", "dummy" => 21 }, %{ "source" => "c4", "dummy" => 42 } ] )
 		%{ "columns" => [ "c1", "c3", "c5" ], "rows" => [ [ 1, 3, 5 ], [ 6, 8, 0 ] ] }
 	"""
 	def drop_column_flow( %{ "columns" => columns, "rows" => rows }, manipulations ) do
@@ -982,10 +982,10 @@ defmodule Dataframex do
 	Add columns
 
 	## Examples
-		iex> Dataframe.add_column( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0 ] } ] )
+		iex> Dataframex.add_column( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0 ] } ] )
 		%{ "columns" => [ "c3", "c1", "c2" ], "rows" => [ [ 0, 1, 2 ], [ 0, 6, 7 ], [ 0, 11, 12 ] ] }
 
-		#iex> Dataframe.add_column( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0 ] }, %{ "destination" => "c4", "options" => [ 9 ] } ] )
+		#iex> Dataframex.add_column( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0 ] }, %{ "destination" => "c4", "options" => [ 9 ] } ] )
 		#%{ "columns" => [ "c3", "c4", "c1", "c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }
 	"""
 	def add_column( %{ "columns" => columns, "rows" => rows }, manipulations ) do
@@ -1010,10 +1010,10 @@ defmodule Dataframex do
 	Add auto number columns
 
 	## Examples
-		iex> Dataframe.add_auto_number_column( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0, 1 ] } ] )
+		iex> Dataframex.add_auto_number_column( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0, 1 ] } ] )
 		%{ "columns" => [ "c3", "c1", "c2" ], "rows" => [ [ 0, 1, 2 ], [ 1, 6, 7 ], [ 2, 11, 12 ] ] }
 
-		#iex> Dataframe.add( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0, 1 ] }, %{ "destination" => "c4", "options" => [ 2, 3 ] } ] )
+		#iex> Dataframex.add( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, 2 ], [ 6, 7 ], [ 11, 12 ] ] }, [ %{ "destination" => "c3", "options" => [ 0, 1 ] }, %{ "destination" => "c4", "options" => [ 2, 3 ] } ] )
 		#%{ "columns" => [ "c3", "c4", "c1", "c2" ], "rows" => [ [ 0, 2, 1, 2 ], [ 1, 5, 6, 7 ], [ 2, 8, 11, 12 ] ] }
 	"""
 	def add_auto_number_column( %{ "columns" => columns, "rows" => rows }, manipulations, before_rows \\ 0 ) do
@@ -1216,7 +1216,7 @@ defmodule Dataframex do
 
 	## Examples
 		#iex> File.rm!( "test/dataframe.csv" )
-		#iex> Dataframe.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
+		#iex> Dataframex.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
 		#%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }
 		#iex> File.rm!( "test/dataframe.csv" )
 		#:ok
@@ -1236,8 +1236,8 @@ defmodule Dataframex do
 	Read dataframe from csv file
 
 	## Examples
-		iex> Dataframe.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
-		iex> Dataframe.read_from_csv_file( "test/dataframe.csv" )
+		iex> Dataframex.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
+		iex> Dataframex.read_from_csv_file( "test/dataframe.csv" )
 		%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ "0","9","1","2" ], [ "0","9","6","7" ], [ "0","9","11","12" ] ] }
 		#iex> File.rm!( "test/dataframe.csv" )
 		#:ok
@@ -1262,8 +1262,8 @@ defmodule Dataframex do
 	Read dataframe from csv file
 
 	## Examples
-		iex> Dataframe.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
-		iex> Dataframe.read_from_csv_file( "test/dataframe.csv" )
+		iex> Dataframex.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
+		iex> Dataframex.read_from_csv_file( "test/dataframe.csv" )
 		%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ "0","9","1","2" ], [ "0","9","6","7" ], [ "0","9","11","12" ] ] }
 		#iex> File.rm!( "test/dataframe.csv" )
 		#:ok
@@ -1283,7 +1283,7 @@ defmodule Dataframex do
 	Add type and statistics to dataframe
 
 	## Examples
-		#iex> Dataframe.add_type_and_statistics( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] } )
+		#iex> Dataframex.add_type_and_statistics( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] } )
 		#%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ "0","9","1","2" ], [ "0","9","6","7" ], [ "0","9","11","12" ] ] }
 	"""
 	def add_type_and_statistics( dataframe ) do
