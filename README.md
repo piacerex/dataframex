@@ -1,6 +1,6 @@
 # Dataframex
 
-[Dataframex](https://hex.pm/packages/dataframex) is a Elixir data manipuration utilities like Python's pandas.```
+[Dataframex](https://hex.pm/packages/dataframex) is a Elixir data manipuration utilities like Python's pandas.
 
 See the [online documentation](https://hexdocs.pm/dataframex).
 
