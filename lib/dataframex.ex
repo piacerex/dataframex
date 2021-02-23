@@ -300,9 +300,9 @@ defmodule Dataframex do
 	Join when matched
 
 	## Examples
-		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/Dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "test/Dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ] ] }
-		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ] ] }
 	"""
 	def join_when_matched( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -314,7 +314,7 @@ defmodule Dataframex do
 		# phase.0: load join datas
 		#----------------------------------------------
 #TODO: DBもリードできるように
-		join_data = read_from_csv_file( "./esuna_dataframes/" <> manipulation[ "source" ] )
+		join_data = read_from_csv_file( manipulation[ "source" ] )
 
 		#----------------------------------------------
 		# phase.1: pickup match input-key/join-key rows
@@ -346,10 +346,10 @@ defmodule Dataframex do
 	Join if input exists
 
 	## Examples
-		iex> Dataframex.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "", "", "3", "4" ], [ "7", "5", "5", "6" ] ] }
 
-		iex> Dataframex.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_input_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "", "", "3", "4" ], [ "7", "5", "5", "6" ], [ "", "", "7", "8" ], [ "11", "9", "9", "10" ],  ] }
 	"""
 	def join_if_input_exists( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -361,7 +361,7 @@ defmodule Dataframex do
 		# phase.0: load join datas
 		#----------------------------------------------
 #TODO: DBもリードできるように
-		join_data = read_from_csv_file( "./esuna_dataframes/" <> manipulation[ "source" ] )
+		join_data = read_from_csv_file( manipulation[ "source" ] )
 
 		#----------------------------------------------
 		# phase.1: pickup input exists input-key/join-key rows
@@ -389,10 +389,10 @@ defmodule Dataframex do
 	Join if join exists
 
 	## Examples
-		iex> Dataframex.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "", "" ], [ "15", "13", "", "" ] ] }
 
-		iex> Dataframex.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "../test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		iex> Dataframex.join_if_join_exists( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
 		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ], [ "15", "13", "", "" ] ] }
 	"""
 	def join_if_join_exists( %{ "columns" => columns, "rows" => rows }, manipulation ) do
@@ -404,7 +404,7 @@ defmodule Dataframex do
 		# phase.0: load join datas
 		#----------------------------------------------
 #TODO: DBもリードできるように
-		join_data = read_from_csv_file( "./esuna_dataframes/" <> manipulation[ "source" ] )
+		join_data = read_from_csv_file( manipulation[ "source" ] )
 
 		#----------------------------------------------
 		# phase.1: pickup join exists input-key/join-key rows
