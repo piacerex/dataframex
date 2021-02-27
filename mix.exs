@@ -6,12 +6,12 @@ defmodule Dataframex.Mixfile do
       app: :dataframex,
       version: "0.5.0",
       elixir: "~> 1.11",
-		description: "Elixir dataframe utilities", 
-		package: 
+		description: "Elixir dataframe utilities",
+		package:
 		[
-			maintainers: [ "piacerex", "the_haigo" ], 
-			licenses:    [ "Apache 2.0" ], 
-			links:       %{ "GitHub" => "https://github.com/piacerex/dataframex" }, 
+			maintainers: [ "piacerex", "the_haigo" ],
+			licenses:    [ "Apache 2.0" ],
+			links:       %{ "GitHub" => "https://github.com/piacerex/dataframex" },
 		],
       start_permanent: Mix.env == :prod,
       deps: deps()
@@ -28,10 +28,12 @@ defmodule Dataframex.Mixfile do
   # Run "mix help deps" to learn about dependencies.
 	defp deps do
 		[
-			{ :ex_doc,         "~> 0.19",   only: :dev, runtime: false }, 
-			{ :earmark,        "~> 1.2",    only: :dev }, 
-			{ :mix_test_watch, "~> 0.6",    only: :dev, runtime: false }, 
-			{ :dialyxir,       "~> 0.5.1",  only: :dev }, 
+			{ :ex_doc,         "~> 0.19",   only: :dev, runtime: false },
+			{ :earmark,        "~> 1.2",    only: :dev },
+			{ :mix_test_watch, "~> 0.6",    only: :dev, runtime: false },
+			{ :dialyxir,       "~> 0.5.1",  only: :dev },
+      { :smallex, "~> 0.0" },
+      { :flow, "~> 1.0" }
 		]
 	end
 end
