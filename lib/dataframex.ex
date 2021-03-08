@@ -771,8 +771,19 @@ defmodule Dataframex do
 	Calculate value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "+", "options" => ["1"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["2", "2"], ["7", "7"], ["12", "12"]]}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "-", "options" => ["1"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["0", "2"], ["5", "7"], ["10", "12"]]}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "*", "options" => ["2"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["2", "2"], ["12", "7"], ["22", "12"]]}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "/", "options" => ["2"] })
+		%{
+  		"columns" => ["c1", "c2"],
+  		"rows" => [["0.5", "2"], ["3.0", "7"], ["5.5", "12"]]
+		}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "%", "options" => ["2"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}
 	"""
 	def calculate_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
