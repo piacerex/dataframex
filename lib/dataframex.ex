@@ -499,8 +499,10 @@ defmodule Dataframex do
 	Sort row
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.sort_row(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c1" } )
+		%{ "columns" => ["c1", "c2"], "rows" => [ [ "1", "2" ], [ "11", "12" ], [ "6", "7" ] ] }
+		iex> Dataframex.sort_row(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c2" } )
+		%{ "columns" => ["c1", "c2"], "rows" => [ [  "11", "12" ], [ "1", "2" ], [ "6", "7" ] ] }
 	"""
 	def sort_row( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
