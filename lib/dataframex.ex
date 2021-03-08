@@ -1272,6 +1272,8 @@ defmodule Dataframex do
 		iex> Dataframex.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
 		iex> Dataframex.read_from_csv_file( "test/dataframe.csv" )
 		%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ "0","9","1","2" ], [ "0","9","6","7" ], [ "0","9","11","12" ] ] }
+		iex> Dataframex.read_from_csv_file( "test/dataframe.csv", 2 )
+		%{"columns" => ["c3", "c4", "c1", "c2"], "rows" => [["0", "9", "1", "2"]]}
 		#iex> File.rm!( "test/dataframe.csv" )
 		#:ok
 	"""
