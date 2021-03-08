@@ -1176,8 +1176,11 @@ defmodule Dataframex do
 	Combine columns
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.combine_columns(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "c3", "options" => ["c2"]})
+		%{
+  		"columns" => ["c3", "c1", "c2"],
+  		"rows" => [["12", "1", "2"], ["67", "6", "7"], ["1112", "11", "12"]]
+		}
 	"""
 	def combine_columns( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ]      = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
