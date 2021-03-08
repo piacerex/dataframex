@@ -824,8 +824,12 @@ defmodule Dataframex do
 	Fill missing
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.fill_missing(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11"]]}, %{"source" => "c2", "destination" => "0" })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11"]]}
+		iex> Dataframex.fill_missing(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", ""]]}, %{"source" => "c2", "destination" => "0" })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "0"]]}
+		iex> Dataframex.fill_missing(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", nil]]}, %{"source" => "c2", "destination" => "0" })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "0"]]}
 	"""
 	def fill_missing( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
