@@ -643,8 +643,10 @@ defmodule Dataframex do
 	Replace value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.replace_value(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c1", "destination" => "1", "options" => [ 1 ] })
+		%{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, "2" ], [ "6", "7" ], [ 1, "12" ] ] }
+		iex> Dataframex.replace_value(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c2", "destination" => "1", "options" => [ 1 ] })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", 1]]}
 	"""
 	def replace_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
