@@ -300,10 +300,10 @@ defmodule Dataframex do
 	Join when matched
 
 	## Examples
-		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "test/Dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
-		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ] ] }
-		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
-		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ] ] }
+		iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "test/Dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ] ] }
+		iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ] ] }
 	"""
 	def join_when_matched( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 #TODO: 列未存在時のエラーログ
@@ -1026,7 +1026,6 @@ defmodule Dataframex do
 
 #TODO: 複数列に対応する
 			values = Stream.iterate( List.first( starts ) + before_rows, &( &1 + List.first( steps ) ) )
-				|> Stream.map( & &1 |> Type.to_string )
 				|> Enum.take( Enum.count( rows ) )
 
 			processed_rows = Lst.merge( rows, values )
