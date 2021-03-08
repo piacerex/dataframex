@@ -684,8 +684,13 @@ defmodule Dataframex do
 	Replace other column value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.replace_other_column_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "1", "options" => ["c2"]})
+		%{"columns" => ["c1", "c2"], "rows" => [["1", nil], ["6", "7"], ["11", nil]]}
+		iex> Dataframex.replace_other_column_value(%{ "columns" => ["c1", "c2", "c3"], "rows" => [["1", "2", "3"], ["6", "7", "8"], ["11", "12", "13"]]}, %{"source" => "c1", "destination" => "6", "options" => ["c3", 6]})
+		%{
+  		"columns" => ["c1", "c2", "c3"],
+  		"rows" => [["1", "2", "3"], ["6", "7", 6], ["11", "12", "13"]]
+		}
 	"""
 	def replace_other_column_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ]       = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
