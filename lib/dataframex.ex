@@ -604,8 +604,8 @@ defmodule Dataframex do
 	Map value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.map_value( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "Advertising", "2" ], [ "Printing", "4" ], [ "Service", "6" ] ] }, %{ "source" => "c1", "destination" => "./test/esuna_maps.csv" } )
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["2", "4"], ["5", "6"]]}
 	"""
 	def map_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
