@@ -438,8 +438,10 @@ defmodule Dataframex do
 	Drop row
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.drop_row( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "c1", "destination" => "== #{"5"}" } )
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["3", "4"]]}
+		iex> Dataframex.drop_row( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "c1", "destination" => "!= #{"5"}" } )
+		%{"columns" => ["c1", "c2"], "rows" => [["5", "6"]]}
 	"""
 	def drop_row( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
