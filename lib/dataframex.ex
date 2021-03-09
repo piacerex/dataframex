@@ -12,6 +12,8 @@ defmodule Dataframex do
 		iex> Dataframex.write_csv( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
 		iex> Dataframex.read_csv( "test/dataframe.csv" )
 		%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ "0","9","1","2" ], [ "0","9","6","7" ], [ "0","9","11","12" ] ] }
+		iex> Dataframex.read_csv( "test/dataframe.csv", 2 )
+		%{ "columns" => [ "c3", "c4", "c1", "c2" ], "rows" => [ [ "0", "9", "1", "2"] ] }
 		#iex> File.rm!( "test/dataframe.csv" )
 		#:ok
 	"""
@@ -300,10 +302,10 @@ defmodule Dataframex do
 	Join when matched
 
 	## Examples
-		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "test/Dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
-		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ] ] }
-		#iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
-		#%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ] ] }
+		iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ] ] }, %{ "source" => "test/Dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ] ] }
+		iex> Dataframex.join_when_matched( %{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "3", "4" ], [ "5", "6" ], [ "7", "8" ], [ "9", "10" ] ] }, %{ "source" => "test/dataframe_join.csv", "destination" => [ "j1", "j3" ], "options" => [ "c2", "j2", ] } )
+		%{ "columns" => [ "j3", "j1", "c1", "c2" ], "rows" => [ [ "3", "1", "1", "2" ], [ "7", "5", "5", "6" ], [ "11", "9", "9", "10" ] ] }
 	"""
 	def join_when_matched( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 #TODO: 列未存在時のエラーログ
@@ -497,8 +499,10 @@ defmodule Dataframex do
 	Sort row
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.sort_row(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c1" } )
+		%{ "columns" => ["c1", "c2"], "rows" => [ [ "1", "2" ], [ "11", "12" ], [ "6", "7" ] ] }
+		iex> Dataframex.sort_row(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c2" } )
+		%{ "columns" => ["c1", "c2"], "rows" => [ [  "11", "12" ], [ "1", "2" ], [ "6", "7" ] ] }
 	"""
 	def sort_row( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -639,8 +643,10 @@ defmodule Dataframex do
 	Replace value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.replace_value(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c1", "destination" => "1", "options" => [ 1 ] })
+		%{ "columns" => [ "c1", "c2" ], "rows" => [ [ 1, "2" ], [ "6", "7" ], [ 1, "12" ] ] }
+		iex> Dataframex.replace_value(%{ "columns" => [ "c1", "c2" ], "rows" => [ [ "1", "2" ], [ "6", "7" ], [ "11", "12" ] ] }, %{ "source" => "c2", "destination" => "1", "options" => [ 1 ] })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", 1]]}
 	"""
 	def replace_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -678,8 +684,13 @@ defmodule Dataframex do
 	Replace other column value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.replace_other_column_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "1", "options" => ["c2"]})
+		%{"columns" => ["c1", "c2"], "rows" => [["1", nil], ["6", "7"], ["11", nil]]}
+		iex> Dataframex.replace_other_column_value(%{ "columns" => ["c1", "c2", "c3"], "rows" => [["1", "2", "3"], ["6", "7", "8"], ["11", "12", "13"]]}, %{"source" => "c1", "destination" => "6", "options" => ["c3", 6]})
+		%{
+  		"columns" => ["c1", "c2", "c3"],
+  		"rows" => [["1", "2", "3"], ["6", "7", 6], ["11", "12", "13"]]
+		}
 	"""
 	def replace_other_column_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ]       = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -718,8 +729,10 @@ defmodule Dataframex do
 	Retrieve value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.retrieve_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "1" })
+		%{"columns" => ["c1", "c2"], "rows" => [["", "2"], ["", "7"], ["", "12"]]}
+		iex> Dataframex.retrieve_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "5678"], ["11", "12"]]}, %{"source" => "c2", "destination" => "6(?<value>7)" })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", ""], ["6", "7"], ["11", ""]]}
 	"""
 	def retrieve_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -758,8 +771,19 @@ defmodule Dataframex do
 	Calculate value
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "+", "options" => ["1"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["2", "2"], ["7", "7"], ["12", "12"]]}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "-", "options" => ["1"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["0", "2"], ["5", "7"], ["10", "12"]]}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "*", "options" => ["2"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["2", "2"], ["12", "7"], ["22", "12"]]}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "/", "options" => ["2"] })
+		%{
+  		"columns" => ["c1", "c2"],
+  		"rows" => [["0.5", "2"], ["3.0", "7"], ["5.5", "12"]]
+		}
+		iex> Dataframex.calculate_value(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "%", "options" => ["2"] })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}
 	"""
 	def calculate_value( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -800,8 +824,12 @@ defmodule Dataframex do
 	Fill missing
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.fill_missing(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11"]]}, %{"source" => "c2", "destination" => "0" })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11"]]}
+		iex> Dataframex.fill_missing(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", ""]]}, %{"source" => "c2", "destination" => "0" })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "0"]]}
+		iex> Dataframex.fill_missing(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", nil]]}, %{"source" => "c2", "destination" => "0" })
+		%{"columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "0"]]}
 	"""
 	def fill_missing( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -1026,7 +1054,6 @@ defmodule Dataframex do
 
 #TODO: 複数列に対応する
 			values = Stream.iterate( List.first( starts ) + before_rows, &( &1 + List.first( steps ) ) )
-				|> Stream.map( & &1 |> Type.to_string )
 				|> Enum.take( Enum.count( rows ) )
 
 			processed_rows = Lst.merge( rows, values )
@@ -1041,8 +1068,11 @@ defmodule Dataframex do
 	Duplicate column
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.duplicate_column(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c2", "destination" => "c3" })
+		%{
+  		"columns" => ["c3", "c1", "c2"],
+  		"rows" => [["2", "1", "2"], ["7", "6", "7"], ["12", "11", "12"]]
+		}
 	"""
 	def duplicate_column( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -1076,8 +1106,16 @@ defmodule Dataframex do
 	Extract column
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.extract_column(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "c3", "options" => ["c2","==2"]})
+		%{
+  		"columns" => ["c3", "c1", "c2"],
+  		"rows" => [["1", "1", "2"], ["", "6", "7"], ["", "11", "12"]]
+		}
+		iex> Dataframex.extract_column(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "c3", "options" => ["c2","!=2"]})
+		%{
+  		"columns" => ["c3", "c1", "c2"],
+  		"rows" => [["", "1", "2"], ["6", "6", "7"], ["11", "11", "12"]]
+		}
 	"""
 	def extract_column( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ]         = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -1146,8 +1184,11 @@ defmodule Dataframex do
 	Combine columns
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.combine_columns(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1", "destination" => "c3", "options" => ["c2"]})
+		%{
+  		"columns" => ["c3", "c1", "c2"],
+  		"rows" => [["12", "1", "2"], ["67", "6", "7"], ["1112", "11", "12"]]
+		}
 	"""
 	def combine_columns( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ]      = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -1182,8 +1223,8 @@ defmodule Dataframex do
 	Pickup column
 
 	## Examples
-		iex>
-		nil
+		iex> Dataframex.pickup_column(%{ "columns" => ["c1", "c2"], "rows" => [["1", "2"], ["6", "7"], ["11", "12"]]}, %{"source" => "c1"})
+		%{"columns" => ["c1"], "rows" => [["1"], ["6"], ["11"]]}
 	"""
 	def pickup_column( %{ "columns" => columns, "rows" => rows }, manipulation ) do
 		[ column_no ] = Lst.pickup_match_index( columns, [ manipulation[ "source" ] ] )
@@ -1239,6 +1280,8 @@ defmodule Dataframex do
 		iex> Dataframex.write_to_csv_file( %{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ 0, 9, 1, 2 ], [ 0, 9, 6, 7 ], [ 0, 9, 11, 12 ] ] }, "test/dataframe.csv" )
 		iex> Dataframex.read_from_csv_file( "test/dataframe.csv" )
 		%{ "columns" => [ "c3","c4","c1","c2" ], "rows" => [ [ "0","9","1","2" ], [ "0","9","6","7" ], [ "0","9","11","12" ] ] }
+		iex> Dataframex.read_from_csv_file( "test/dataframe.csv", 2 )
+		%{"columns" => ["c3", "c4", "c1", "c2"], "rows" => [["0", "9", "1", "2"]]}
 		#iex> File.rm!( "test/dataframe.csv" )
 		#:ok
 	"""

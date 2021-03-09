@@ -32,7 +32,7 @@ defmodule Dataframex.Mixfile do
 			{ :earmark,        "~> 1.2",    only: :dev },
 			{ :mix_test_watch, "~> 0.6",    only: :dev, runtime: false },
 			{ :dialyxir,       "~> 0.5.1",  only: :dev },
-      { :smallex, "~> 0.0" },
+      { :smallex, "~> 0.2.4", github: "piacerex/smallex", branch: "v1.0" },
       { :flow, "~> 1.0" }
 		]
 	end
