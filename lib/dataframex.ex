@@ -624,7 +624,7 @@ defmodule Dataframex do
 
 			%{ "columns" => columns, "rows" => rows, "error" => message }
 		else
-			maps = read_map_file( "./esuna_maps/" <> manipulation[ "destination" ] )
+			maps = read_map_file( manipulation[ "destination" ] )
 			originals = maps |> Enum.map( & &1 |> List.first )
 
 			processed_rows = rows
